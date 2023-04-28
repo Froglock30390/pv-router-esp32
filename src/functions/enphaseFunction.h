@@ -208,11 +208,11 @@ bool Enphase_get_7_Production(void){
   }
   if (String(configmodule.envoy) == "S") {
     url = String(EnvoyS);
-    Serial.print("type S ");
-    Serial.println(url);
+    //Serial.print("type S ");
+    // Serial.println(url);
   }
           
-  Serial.println("Enphase Get production : https://" + adr + url);
+  //Serial.println("Enphase Get production : https://" + adr + url);
   if (https.begin("http://" + adr + url)) { 
     https.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
     https.addHeader("Authorization","Bearer "+String(configmodule.token));
@@ -242,6 +242,9 @@ bool Enphase_get_7_Production(void){
       }
       retour = true;
       // debug
+      if (gDisplayValues.Fronius_prod < 0) { 
+        gDisplayValues.Fronius_prod = 0;
+      } 
       Serial.println("Enphase Get production > prod: " + String(gDisplayValues.Fronius_prod) + " conso: " + String(gDisplayValues.Fronius_conso) + " total conso: " + String(gDisplayValues.Fronius_totalconso));
     } else {
       Serial.println("[Enphase Get production] GET... failed, error: " + httpCode);
@@ -295,7 +298,7 @@ void Enphase_get_7(void) {
     if (Enphase_get_7_Production() == false) {
       Enphase_get_7_JWT();
     }
-    vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelay(pdMS_TO_TICKS(250));
   } else {
     if (configmodule.token == "")  {
       Serial.println("Enphase version 7 : Token vide");
